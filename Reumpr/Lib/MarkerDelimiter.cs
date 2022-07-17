@@ -8,10 +8,10 @@ namespace tetryds.Reumpr
         //Working without partial overflow overlap repeating
         readonly byte[] delimiter;
         readonly int length;
-        int delimiterIndex = 0;
 
         readonly byte[] overflowBuffer;
         int overflowLength;
+        int overflowFill;
 
         public MarkerDelimiter(byte[] delimiter)
         {
@@ -22,7 +22,8 @@ namespace tetryds.Reumpr
 
             overflowBuffer = new byte[Math.Max(1, length - 1)];
             overflowLength = overflowBuffer.Length;
-            //Overflow starts empty
+            //Overflow fill starts at length to prevent initial buffer from matching
+            overflowFill = overflowLength;
         }
 
         public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
@@ -30,10 +31,14 @@ namespace tetryds.Reumpr
             if (count > data.Length) throw new ArgumentException("Count cannot be greater than data length");
             delimiterIndexes.Clear();
 
-            delimiterIndex = 0;
+            // Since the buffer is always a single byte smaller than the delimiter, we can start from scratch every time
+            int delimiterIndex = 0;
 
-            for (int i = -overflowLength; i < count; i++)
+            int start = overflowFill - overflowLength;
+            // Iterate and read both buffers together as if they were one big buffer
+            for (int i = start; i < count; i++)
             {
+                overflowFill = Math.Max(0, overflowFill - 1);
                 byte current;
                 if (i < 0)
                     current = overflowBuffer[overflowLength + i];
@@ -64,7 +69,7 @@ namespace tetryds.Reumpr
 
         private void ShiftOverflowBuffer(byte[] data, int count)
         {
-            //If count is smaller than overflow length, shift to make room for the data
+            //If count is smaller than overflow length, shift to make room for the upcoming data
             if (overflowLength > count)
             {
                 ShiftBuffer(overflowBuffer, count);

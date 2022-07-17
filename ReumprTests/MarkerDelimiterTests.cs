@@ -41,6 +41,21 @@ namespace tetryds.ReumprTests
         }
 
         [TestMethod]
+        public void FindDelimitersMultiple2()
+        {
+            byte[] delimiter = new byte[] { 0x00 };
+            byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+            List<int> expectedIndexes = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data, data.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes, indexes);
+        }
+
+        [TestMethod]
         public void FindDelimitersMultipleSequential()
         {
             byte[] delimiter = new byte[] { 0xFF };
