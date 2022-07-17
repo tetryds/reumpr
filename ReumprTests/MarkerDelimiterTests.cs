@@ -199,7 +199,7 @@ namespace tetryds.ReumprTests
         public void FindDelimitersPartialOverflowOverlapRepeating()
         {
             byte[] delimiter = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
-            byte[] data1 = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF};
+            byte[] data1 = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
             byte[] data2 = new byte[] { 0xAA, 0xFF, 0xBB };
 
             List<int> expectedIndexes1 = new List<int>();
@@ -236,6 +236,61 @@ namespace tetryds.ReumprTests
         }
 
         [TestMethod]
+        public void FindDelimitersPartialOverflowOverlapRepeatingSplit()
+        {
+            //byte[] delimiter = new byte[] { 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xBB };
+            //byte[] data1 = new byte[] { 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
+            //byte[] data2 = new byte[] { 0xAA, 0xFF, 0xAA, 0xFF };
+            //byte[] data3 = new byte[] { 0xAA, 0xBB, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
+
+            byte[] delimiter = new byte[] { 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D };
+            byte[] data1 = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+            byte[] data2 = new byte[] { 0x09, 0x0A, 0x0B, 0x0C };
+            byte[] data3 = new byte[] { 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14 };
+
+            List<int> expectedIndexes1 = new List<int>();
+            List<int> expectedIndexes2 = new List<int>();
+            List<int> expectedIndexes3 = new List<int>() { -5 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes1, indexes);
+
+            markerDelimiter.CheckDelimiters(data2, data2.Length, indexes);
+            CollectionAssert.AreEqual(expectedIndexes2, indexes);
+
+            markerDelimiter.CheckDelimiters(data3, data3.Length, indexes);
+            CollectionAssert.AreEqual(expectedIndexes3, indexes);
+        }
+
+        [TestMethod]
+        public void FindDelimitersPartialOverflowOverlapRepeatingSplit2()
+        {
+            byte[] delimiter = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xBB };
+            byte[] data1 = new byte[] { 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
+            byte[] data2 = new byte[] { 0xAA, 0xFF, 0xAA, 0xFF };
+            byte[] data3 = new byte[] { 0xAA, 0xBB, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
+
+            List<int> expectedIndexes1 = new List<int>();
+            List<int> expectedIndexes2 = new List<int>();
+            List<int> expectedIndexes3 = new List<int>() { -5 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes1, indexes);
+
+            markerDelimiter.CheckDelimiters(data2, data2.Length, indexes);
+            CollectionAssert.AreEqual(expectedIndexes2, indexes);
+
+            markerDelimiter.CheckDelimiters(data3, data3.Length, indexes);
+            CollectionAssert.AreEqual(expectedIndexes3, indexes);
+        }
+
+        [TestMethod]
         public void ShiftBuffer()
         {
             byte[] buffer = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
@@ -244,6 +299,95 @@ namespace tetryds.ReumprTests
             MarkerDelimiter.ShiftBuffer(buffer, 4);
 
             CollectionAssert.AreEqual(expected, buffer);
+        }
+
+        [TestMethod]
+        public void IterateCombined()
+        {
+            byte[] buffer1 = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+            byte[] buffer2 = new byte[] { 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+
+            List<byte> current = new List<byte>();
+            List<byte> expected = new List<byte> { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22, 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+            List<int> currentIndex = new List<int>();
+            List<int> expectedIndex = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
+            MarkerDelimiter.IterateCombinedArrays(buffer1, buffer2, 0, buffer1.Length + buffer2.Length, (i, b) =>
+            {
+                current.Add(b);
+                currentIndex.Add(i);
+            });
+
+            CollectionAssert.AreEqual(expected, current);
+            CollectionAssert.AreEqual(expectedIndex, currentIndex);
+        }
+
+        [TestMethod]
+        public void IterateCombinedSkipping()
+        {
+            byte[] buffer1 = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+            byte[] buffer2 = new byte[] { 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+
+            List<byte> current = new List<byte>();
+            List<byte> expected = new List<byte> { 0x00, 0x11, 0x22, 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+            List<int> currentIndex = new List<int>();
+            List<int> expectedIndex = new List<int> { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
+            MarkerDelimiter.IterateCombinedArrays(buffer1, buffer2, 4, buffer1.Length + buffer2.Length - 4, (i, b) =>
+            {
+                current.Add(b);
+                currentIndex.Add(i);
+            });
+
+            CollectionAssert.AreEqual(expected, current);
+            CollectionAssert.AreEqual(expectedIndex, currentIndex);
+        }
+
+        [TestMethod]
+        public void IterateCombinedArrays()
+        {
+            byte[] buffer1 = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+            byte[] buffer2 = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+
+            List<byte> currentBytes = new List<byte>();
+            List<byte> expected = new List<byte> { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22, 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+
+            for (int i = -buffer1.Length; i < buffer2.Length; i++)
+            {
+                byte current;
+                if (i < 0)
+                    current = buffer1[buffer1.Length + i];
+                else
+                    current = buffer2[i];
+                currentBytes.Add(current);
+            }
+        }
+
+        [TestMethod]
+        public void IterateCombinedUntilCount()
+        {
+            byte[] buffer1 = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+            byte[] buffer2 = new byte[] { 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+
+            List<byte> current = new List<byte>();
+            List<byte> expected = new List<byte> { 0x00, 0x11, 0x22, 0x00, 0x11, 0x22, 0xCC, 0x00 };
+
+            List<int> currentIndex = new List<int>();
+            List<int> expectedIndex = new List<int> { 4, 5, 6, 7, 8, 9, 10, 11 };
+
+            MarkerDelimiter.IterateCombinedArrays(buffer1, buffer2, 4, buffer1.Length + buffer2.Length - 6, (i, b) =>
+            {
+                current.Add(b);
+                currentIndex.Add(i);
+            });
+
+            CollectionAssert.AreEqual(expected, current);
+            CollectionAssert.AreEqual(expectedIndex, currentIndex);
         }
     }
 }
