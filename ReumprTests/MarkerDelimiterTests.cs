@@ -146,6 +146,21 @@ namespace tetryds.ReumprTests
         }
 
         [TestMethod]
+        public void FindDelimitersPartialOverlapRepeating3()
+        {
+            byte[] delimiter = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
+            byte[] data = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
+
+            List<int> expectedIndexes = new List<int>() { 10 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data, data.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes, indexes);
+        }
+
+        [TestMethod]
         public void FindDelimitersMissing()
         {
             byte[] delimiter = new byte[] { 0xFF };
@@ -198,6 +213,37 @@ namespace tetryds.ReumprTests
 
             markerDelimiter.CheckDelimiters(data2, data2.Length, indexes);
             CollectionAssert.AreEqual(expectedIndexes2, indexes);
+        }
+
+        [TestMethod]
+        public void FindDelimitersPartialOverflowOverlapRepeating2()
+        {
+            byte[] delimiter = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
+            byte[] data1 = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF };
+            byte[] data2 = new byte[] { 0xAA, 0xFF, 0xBB };
+
+            List<int> expectedIndexes1 = new List<int>();
+            List<int> expectedIndexes2 = new List<int>() { -3 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes1, indexes);
+
+            markerDelimiter.CheckDelimiters(data2, data2.Length, indexes);
+            CollectionAssert.AreEqual(expectedIndexes2, indexes);
+        }
+
+        [TestMethod]
+        public void ShiftBuffer()
+        {
+            byte[] buffer = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
+            byte[] expected = new byte[] { 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
+
+            MarkerDelimiter.ShiftBuffer(buffer, 4);
+
+            CollectionAssert.AreEqual(expected, buffer);
         }
     }
 }
