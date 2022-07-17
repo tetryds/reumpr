@@ -38,7 +38,6 @@ namespace tetryds.Reumpr
             // Iterate and read both buffers together as if they were one big buffer
             for (int i = start; i < count; i++)
             {
-                overflowFill = Math.Max(0, overflowFill - 1);
                 byte current;
                 if (i < 0)
                     current = overflowBuffer[overflowLength + i];
@@ -62,6 +61,10 @@ namespace tetryds.Reumpr
                         delimiterIndex = 0;
                     }
                 }
+
+                //For every element we fill the overflow buffer,
+                //this only matters until we have iterated enough items so that the overflow buffer is full with data
+                overflowFill = Math.Max(0, overflowFill - 1);
             }
 
             ShiftOverflowBuffer(data, count);
@@ -83,27 +86,6 @@ namespace tetryds.Reumpr
             for (int i = toFill; i > 0; i--)
             {
                 overflowBuffer[overflowLength - i] = data[count - i];
-            }
-        }
-
-        public static void IterateCombinedArrays(byte[] array1, byte[] array2, int start, int count, Action<int, byte> callback)
-        {
-            if (start > array1.Length) throw new ArgumentException("Start cannot be bigger than first array length");
-            if (array1.Length + array2.Length < start + count) throw new ArgumentException($"Attempting to iterate more items than available");
-
-            int index = start;
-            for (int i = start; i < array1.Length; i++)
-            {
-                callback(index, array1[i]);
-                index++;
-                if (index - start == count) return;
-            }
-
-            for (int i = 0; i < array2.Length; i++)
-            {
-                callback(index, array2[i]);
-                index++;
-                if (index - start == count) return;
             }
         }
 
