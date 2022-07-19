@@ -71,6 +71,21 @@ namespace tetryds.ReumprTests
         }
 
         [TestMethod]
+        public void FindDelimitersMultipleSequentialLong()
+        {
+            byte[] delimiter = new byte[] { 0xFF, 0xFF };
+            byte[] data = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+            List<int> expectedIndexes = new List<int>() { 0, 2, 4, 6, 8, 10 };
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+
+            List<int> indexes = new List<int>();
+            markerDelimiter.CheckDelimiters(data, data.Length, indexes);
+
+            CollectionAssert.AreEqual(expectedIndexes, indexes);
+        }
+
+        [TestMethod]
         public void FindDelimitersLong()
         {
             byte[] delimiter = new byte[] { 0xFF, 0xAA };
@@ -363,6 +378,74 @@ namespace tetryds.ReumprTests
                 if (expectedIndexes[i].Count != indexes.Count)
                     Console.WriteLine(i);
                 CollectionAssert.AreEqual(expectedIndexes[i], indexes);
+            }
+        }
+
+        [TestMethod]
+        public void FindDelimitersOverflowFill()
+        {
+            byte[] delimiter = new byte[] { 0xAA, 0xAA, 0xAA, 0xAA };
+            List<byte[]> data = new List<byte[]>
+            {
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA }
+            };
+
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            List<List<int>> expectedIndexes = new List<List<int>>()
+            {
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 }
+            };
+
+            List<int> indexes = new List<int>();
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                markerDelimiter.CheckDelimiters(data[i], data[i].Length, indexes);
+                if (expectedIndexes[i].Count != indexes.Count)
+                    Console.WriteLine(i);
+                CollectionAssert.AreEqual(expectedIndexes[i], indexes, $"Index {i}");
+            }
+        }
+
+        [TestMethod]
+        public void FindDelimitersOverflowFill2()
+        {
+            byte[] delimiter = new byte[] { 0xAA, 0xAA, 0xAA, 0xAA };
+            List<byte[]> data = new List<byte[]>
+            {
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA }
+            };
+
+            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            List<List<int>> expectedIndexes = new List<List<int>>()
+            {
+                new List<int>(){ 0 },
+                new List<int>(){ -2, 2 },
+                new List<int>(){ 0 },
+                new List<int>(){ -2, 2 },
+                new List<int>(){ 0 }
+            };
+
+            List<int> indexes = new List<int>();
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                markerDelimiter.CheckDelimiters(data[i], data[i].Length, indexes);
+                if (expectedIndexes[i].Count != indexes.Count)
+                    Console.WriteLine(i);
+                CollectionAssert.AreEqual(expectedIndexes[i], indexes, $"Index {i}");
             }
         }
 

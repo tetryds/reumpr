@@ -51,20 +51,33 @@ namespace tetryds.Reumpr
                         i -= delimiterIndex;
                         delimiterIndex = 0;
                     }
+                    // Nothing found, add it to overflow fill
+                    overflowFill = Math.Max(0, overflowFill - 1);
                 }
                 else
                 {
                     delimiterIndex++;
+                    // Match found
                     if (delimiterIndex == length)
                     {
+                        // Match found, adjust overflow fill to prevent it from spilling to the next marker check
+                        int distanceToEnd = count - delimiterIndex;
+                        
+                        overflowFill = Math.Min(count, overflowLength);
+
                         delimiterIndexes.Add(i - length + 1);
                         delimiterIndex = 0;
+                    }
+                    else
+                    {
+                        // Nothing found, add it to overflow fill
+                        overflowFill = Math.Max(0, overflowFill - 1);
                     }
                 }
 
                 //For every element we fill the overflow buffer,
                 //this only matters until we have iterated enough items so that the overflow buffer is full with data
-                overflowFill = Math.Max(0, overflowFill - 1);
+                //overflowFill = Math.Max(0, overflowFill - 1);
             }
 
             ShiftOverflowBuffer(data, count);
