@@ -5,10 +5,10 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using tetryds.Reumpr;
 
-namespace tetryds.ReumprTests
+namespace tetryds.Reumpr.Tests
 {
     [TestClass]
-    public class MarkerDelimiterTests
+    public class MarkerFinderTests
     {
         [TestMethod]
         public void FindDelimitersSingle()
@@ -17,7 +17,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00 };
 
             List<int> expectedIndexes = new List<int>() { 5 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -32,7 +32,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF };
 
             List<int> expectedIndexes = new List<int>() { 5, 7, 11 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -47,7 +47,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
             List<int> expectedIndexes = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -62,7 +62,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
             List<int> expectedIndexes = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -77,7 +77,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
             List<int> expectedIndexes = new List<int>() { 0, 2, 4, 6, 8, 10 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -92,7 +92,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xAA, 0x00, 0x00 };
 
             List<int> expectedIndexes = new List<int>() { 5 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -107,7 +107,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0xAA };
 
             List<int> expectedIndexes = new List<int>() { 7 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -122,7 +122,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xAA };
 
             List<int> expectedIndexes = new List<int>() { 7 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -137,7 +137,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xAA, 0xFF, 0xAA, 0xBB };
 
             List<int> expectedIndexes = new List<int>() { 8 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -152,7 +152,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
 
             List<int> expectedIndexes = new List<int>() { 8 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -167,7 +167,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
 
             List<int> expectedIndexes = new List<int>() { 8 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -182,7 +182,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xBB };
 
             List<int> expectedIndexes = new List<int>() { 10 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -197,7 +197,7 @@ namespace tetryds.ReumprTests
             byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
             List<int> expectedIndexes = new List<int>();
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data, data.Length, indexes);
@@ -214,7 +214,7 @@ namespace tetryds.ReumprTests
 
             List<int> expectedIndexes1 = new List<int>();
             List<int> expectedIndexes2 = new List<int>() { -1, 4 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
@@ -234,7 +234,7 @@ namespace tetryds.ReumprTests
 
             List<int> expectedIndexes1 = new List<int>();
             List<int> expectedIndexes2 = new List<int>() { -3 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
@@ -254,7 +254,7 @@ namespace tetryds.ReumprTests
 
             List<int> expectedIndexes1 = new List<int>();
             List<int> expectedIndexes2 = new List<int>() { -3 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
@@ -281,7 +281,7 @@ namespace tetryds.ReumprTests
             List<int> expectedIndexes1 = new List<int>();
             List<int> expectedIndexes2 = new List<int>();
             List<int> expectedIndexes3 = new List<int>() { -5 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
@@ -306,7 +306,7 @@ namespace tetryds.ReumprTests
             List<int> expectedIndexes1 = new List<int>();
             List<int> expectedIndexes2 = new List<int>();
             List<int> expectedIndexes3 = new List<int>() { -5 };
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
 
             List<int> indexes = new List<int>();
             markerDelimiter.CheckDelimiters(data1, data1.Length, indexes);
@@ -347,9 +347,72 @@ namespace tetryds.ReumprTests
                 new byte[] { 0xAA, 0xBB},
             };
 
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
             List<List<int>> expectedIndexes = new List<List<int>>()
             {
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(){ 0 },
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(),
+                new List<int>(){ -1 },
+            };
+
+            List<int> indexes = new List<int>();
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                markerDelimiter.CheckDelimiters(data[i], data[i].Length, indexes);
+                if (expectedIndexes[i].Count != indexes.Count)
+                    Console.WriteLine(i);
+                CollectionAssert.AreEqual(expectedIndexes[i], indexes);
+            }
+        }
+
+        [TestMethod]
+        public void FindDelimitersPulverizedWithEmpty()
+        {
+            byte[] delimiter = new byte[] { 0xAA, 0xAA };
+            List<byte[]> data = new List<byte[]>
+            {
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xAA },
+                //TODO: Fix this scenario where a match has to fill the overflow fill to prevent the next byte array from matching
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xAA, 0xFF },
+                new byte[] { 0xAA, 0xBB},
+                new byte[] { 0xCC, 0xAA },
+                new byte[] { 0xAA, 0xBB},
+            };
+
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
+            List<List<int>> expectedIndexes = new List<List<int>>()
+            {
+                new List<int>(),
                 new List<int>(),
                 new List<int>(),
                 new List<int>(),
@@ -394,7 +457,7 @@ namespace tetryds.ReumprTests
                 new byte[] { 0xAA, 0xAA, 0xAA, 0xAA }
             };
 
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
             List<List<int>> expectedIndexes = new List<List<int>>()
             {
                 new List<int>(){ 0 },
@@ -416,7 +479,7 @@ namespace tetryds.ReumprTests
         }
 
         [TestMethod]
-        public void FindDelimitersOverflowFill2()
+        public void FindDelimitersOverflowFillPartial()
         {
             byte[] delimiter = new byte[] { 0xAA, 0xAA, 0xAA, 0xAA };
             List<byte[]> data = new List<byte[]>
@@ -428,7 +491,7 @@ namespace tetryds.ReumprTests
                 new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA }
             };
 
-            MarkerDelimiter markerDelimiter = new MarkerDelimiter(delimiter);
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
             List<List<int>> expectedIndexes = new List<List<int>>()
             {
                 new List<int>(){ 0 },
@@ -443,6 +506,41 @@ namespace tetryds.ReumprTests
             for (int i = 0; i < data.Count; i++)
             {
                 markerDelimiter.CheckDelimiters(data[i], data[i].Length, indexes);
+                if (expectedIndexes[i].Count != indexes.Count)
+                    Console.WriteLine(i);
+                CollectionAssert.AreEqual(expectedIndexes[i], indexes, $"Index {i}");
+            }
+        }
+
+        [TestMethod]
+        public void FindDelimitersOverflowFillClamped()
+        {
+            byte[] delimiter = new byte[] { 0xAA, 0xAA, 0xAA, 0xAA };
+            List<byte[]> data = new List<byte[]>
+            {
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA },
+                new byte[] { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA }
+            };
+            int length = 4;
+
+            MarkerFinder markerDelimiter = new MarkerFinder(delimiter);
+            List<List<int>> expectedIndexes = new List<List<int>>()
+            {
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 },
+                new List<int>(){ 0 }
+            };
+
+            List<int> indexes = new List<int>();
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                markerDelimiter.CheckDelimiters(data[i], length, indexes);
                 if (expectedIndexes[i].Count != indexes.Count)
                     Console.WriteLine(i);
                 CollectionAssert.AreEqual(expectedIndexes[i], indexes, $"Index {i}");
@@ -455,7 +553,7 @@ namespace tetryds.ReumprTests
             byte[] buffer = new byte[] { 0xFF, 0xAA, 0xBB, 0xCC, 0x00, 0x11, 0x22 };
             byte[] expected = new byte[] { 0x00, 0x11, 0x22, 0xCC, 0x00, 0x11, 0x22 };
 
-            MarkerDelimiter.ShiftBuffer(buffer, 4);
+            MarkerFinder.ShiftBuffer(buffer, 4);
 
             CollectionAssert.AreEqual(expected, buffer);
         }

@@ -4,8 +4,9 @@ using System.Net.Sockets;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using tetryds.Reumpr;
+using tetryds.Reumpr.Tests.Tools;
 
-namespace tetryds.ReumprTests
+namespace tetryds.Reumpr.Tests
 {
     [TestClass]
     public class SocketServerFactoryTests

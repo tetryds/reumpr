@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace tetryds.Reumpr
 {
-    public class MarkerDelimiter : IMessageDelimiter
+    public class MarkerFinder : IMessageDelimiter
     {
         //Working without partial overflow overlap repeating
         readonly byte[] delimiter;
@@ -13,7 +13,9 @@ namespace tetryds.Reumpr
         int overflowLength;
         int overflowFill;
 
-        public MarkerDelimiter(byte[] delimiter)
+        public int DelimiterSize => delimiter.Length;
+
+        public MarkerFinder(byte[] delimiter)
         {
             this.delimiter = delimiter ?? throw new ArgumentNullException(nameof(delimiter));
             if (delimiter.Length == 0) throw new ArgumentException("Parameter cannot be empty", nameof(delimiter));
@@ -74,10 +76,6 @@ namespace tetryds.Reumpr
                         overflowFill = Math.Max(0, overflowFill - 1);
                     }
                 }
-
-                //For every element we fill the overflow buffer,
-                //this only matters until we have iterated enough items so that the overflow buffer is full with data
-                //overflowFill = Math.Max(0, overflowFill - 1);
             }
 
             ShiftOverflowBuffer(data, count);

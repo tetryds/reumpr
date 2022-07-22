@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace tetryds.ReumprTests
+namespace tetryds.Reumpr.Tests.Tools
 {
     public class CallbackObjCollection<T>
     {

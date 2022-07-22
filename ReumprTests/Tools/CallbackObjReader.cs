@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace tetryds.ReumprTests
+namespace tetryds.Reumpr.Tests.Tools
 {
     public class CallbackObjReader<T>
     {
