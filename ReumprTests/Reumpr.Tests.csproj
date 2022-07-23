@@ -50,7 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageProcessorTests.cs" />
-    <Compile Include="MarkerFinderTests.cs" />
+    <Compile Include="MarkerDelimiterTests.cs" />
+    <Compile Include="ConcurrentHashTests.cs" />
+    <Compile Include="GatewayEndToEndTests.cs" />
+    <Compile Include="Tools\DummyBeforeDelimiter.cs" />
     <Compile Include="Tools\UTF8Parser.cs" />
     <Compile Include="Tools\CallbackObjAggregator.cs" />
     <Compile Include="Tools\CallbackObjReader.cs" />

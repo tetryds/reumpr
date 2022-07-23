@@ -23,6 +23,25 @@ namespace tetryds.Reumpr
             bytesRead = new List<byte>();
         }
 
+        public byte[][] GetAllBytes(T message)
+        {
+            byte[] msg = messageParser.Serialize(message);
+            (byte[] del, DelimiterPos pos) = delimiter.GetDelimiter(msg);
+
+            byte[][] data = new byte[2][];
+            if (pos == DelimiterPos.After)
+            {
+                data[0] = msg;
+                data[1] = del;
+            }
+            else
+            {
+                data[0] = del;
+                data[1] = msg;
+            }
+            return data;
+        }
+
         public void GetMessages(byte[] buffer, int count, List<T> messages)
         {
             messages.Clear();

@@ -2,28 +2,28 @@
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
+using tetryds.Reumpr.Collections;
 
 namespace tetryds.Reumpr
 {
     public class Dispatcher<T> : IDisposable
     {
+        readonly MessageProcessor<T> messageProcessor;
+
         readonly ConcurrentDictionary<Guid, TcpClient> clientMap;
-        readonly BlockingCollection<(Guid, T)> outbound;
+        readonly BlockingCollection<Package<T>> outbound;
         readonly CancellationTokenSource canceller;
         readonly Thread worker;
-        readonly IMessageParser<T> messageParser;
-        readonly byte[] delimiter;
 
-        public event Action<Exception> ErrorOcurred;
+        public event Action<MissingClientException> MissingClient;
         public event Action<Exception> CrashOcurred;
 
-        public Dispatcher(IMessageParser<T> messageParser, byte[] delimiter)
+        public Dispatcher(Func<MessageProcessor<T>> messageProcessorProvider)
         {
-            this.messageParser = messageParser ?? throw new ArgumentNullException(nameof(messageParser));
-            this.delimiter = delimiter ?? throw new ArgumentNullException(nameof(delimiter));
+            messageProcessor = messageProcessorProvider?.Invoke() ?? throw new ArgumentNullException(nameof(messageProcessorProvider));
 
             clientMap = new ConcurrentDictionary<Guid, TcpClient>();
-            outbound = new BlockingCollection<(Guid, T)>();
+            outbound = new BlockingCollection<Package<T>>();
             canceller = new CancellationTokenSource();
 
             worker = new Thread(DoDispatch)
@@ -44,11 +44,16 @@ namespace tetryds.Reumpr
             return clientMap.TryAdd(id, client);
         }
 
+        public bool TryRemoveTcpClient(Guid id, out TcpClient client)
+        {
+            return clientMap.TryRemove(id, out client);
+        }
+
         public void SendMessage(Guid id, T msg)
         {
             if (!worker.IsAlive)
-                throw new DispatcherException("Cannot send message, dispatcher has not been started");
-            outbound.Add((id, msg));
+                throw new ConnectionException("Cannot send message, dispatcher has not been started");
+            outbound.Add(new Package<T>(id, msg));
         }
 
         private void DoDispatch()
@@ -62,17 +67,15 @@ namespace tetryds.Reumpr
                     (Guid id, T msg) = outbound.Take(cancel);
                     if (clientMap.TryGetValue(id, out TcpClient client))
                     {
-                        // TODO: This currently does not support message size delimiter
-                        // because the delimiter is always sent after and knows nothing about the message
-                        // maybe message parser should have a delimiter embedded
-                        byte[] data = messageParser.Serialize(msg);
-                        NetworkStream stream = client.GetStream();
-                        stream.Write(data, 0, data.Length);
-                        stream.Write(delimiter, 0, delimiter.Length);
+                        byte[][] data = messageProcessor.GetAllBytes(msg);
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            client.GetStream().Write(data[i], 0, data[i].Length);
+                        }
                     }
                     else
                     {
-                        ErrorOcurred?.Invoke(new ClientNotRegisteredException(id));
+                        MissingClient?.Invoke(new MissingClientException(id));
                     }
                 }
             }

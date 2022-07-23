@@ -18,8 +18,35 @@ namespace tetryds.Reumpr.Tests
         public void SetUp()
         {
             parser = new UTF8Parser();
-            MarkerFinder delimiter = new MarkerFinder(parser.Serialize("ZZ"));
+            MarkerDelimiter delimiter = new MarkerDelimiter(parser.Serialize("ZZ"));
             processor = new MessageProcessor<string>(parser, delimiter);
+        }
+
+        [TestMethod]
+        public void GetBytesDelimiterAfter()
+        {
+            byte[][] data = processor.GetAllBytes("Bom Dia");
+
+            byte[] expectedMessage = parser.Serialize("Bom Dia");
+            byte[] expectedDelimiter = parser.Serialize("ZZ");
+
+            CollectionAssert.AreEqual(data[0], expectedMessage);
+            CollectionAssert.AreEqual(data[1], expectedDelimiter);
+        }
+
+        [TestMethod]
+        public void GetBytesDelimiterBefore()
+        {
+            DummyBeforeDelimiter delimiter = new DummyBeforeDelimiter(parser.Serialize("ZZ"));
+            processor = new MessageProcessor<string>(parser, delimiter);
+
+            byte[][] data = processor.GetAllBytes("Bom Dia");
+
+            byte[] expectedDelimiter = parser.Serialize("ZZ");
+            byte[] expectedMessage = parser.Serialize("Bom Dia");
+
+            CollectionAssert.AreEqual(data[0], expectedDelimiter);
+            CollectionAssert.AreEqual(data[1], expectedMessage);
         }
 
         [TestMethod]

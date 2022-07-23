@@ -19,7 +19,7 @@ namespace tetryds.Reumpr.Tests
             const int Port = 3000;
             CallbackObjReader<TcpClient> socketReader = new CallbackObjReader<TcpClient>();
 
-            SocketServerFactory.Listen(Port, socketReader.SetValue);
+            SocketServerFactory.Listen(Port, socketReader.SetValue, null);
 
             TcpClient client = new TcpClient();
             client.Connect("localhost", Port);
@@ -37,7 +37,7 @@ namespace tetryds.Reumpr.Tests
 
             CallbackObjCollection<TcpClient> connectedClients = new CallbackObjCollection<TcpClient>(PollingPeriod);
 
-            SocketServerFactory.Listen(Port, connectedClients.Add);
+            SocketServerFactory.Listen(Port, connectedClients.Add, null);
 
             for (int i = 0; i < ClientCount; i++)
             {
