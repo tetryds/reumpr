@@ -62,7 +62,8 @@ namespace tetryds.Reumpr.Tests
         private MessageProcessor<string> GetProcessor()
         {
             UTF8Parser parser = new UTF8Parser();
-            MarkerDelimiter delimiter = new MarkerDelimiter(parser.Serialize(Delimiter));
+            //MarkerDelimiter delimiter = new MarkerDelimiter(parser.Serialize(Delimiter));
+            SizeDelimiter delimiter = new SizeDelimiter();
             return new MessageProcessor<string>(parser, delimiter);
         }
     }
