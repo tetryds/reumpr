@@ -33,7 +33,7 @@ namespace tetryds.Reumpr
             return (delimiter, DelimiterPos.After);
         }
 
-        public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
+        public int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
         {
             if (count > data.Length) throw new ArgumentException("Count cannot be greater than data length");
             delimiterIndexes.Clear();
@@ -69,7 +69,7 @@ namespace tetryds.Reumpr
                     {
                         // Match found, adjust overflow fill to prevent it from spilling to the next marker check
                         int distanceToEnd = count - delimiterIndex;
-                        
+
                         overflowFill = Math.Min(count, overflowLength);
 
                         delimiterIndexes.Add(i - length + 1);
@@ -84,6 +84,8 @@ namespace tetryds.Reumpr
             }
 
             ShiftOverflowBuffer(data, count);
+            // Marked msg always starts at 0
+            return 0;
         }
 
         private void ShiftOverflowBuffer(byte[] data, int count)

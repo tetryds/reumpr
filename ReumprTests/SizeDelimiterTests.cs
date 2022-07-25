@@ -22,7 +22,7 @@ namespace tetryds.Reumpr.Tests
             data.AddRange(delimiter);
             data.AddRange(msg);
 
-            List<int> expectedIndexes = new List<int>() { msg.Length + delimiter.Length + 1 };
+            List<int> expectedIndexes = new List<int>() { msg.Length + delimiter.Length };
 
             List<int> indexes = new List<int>();
             sizeDelimiter.CheckDelimiters(data.ToArray(), data.Count, indexes);
@@ -42,7 +42,7 @@ namespace tetryds.Reumpr.Tests
                 (byte[] delimiter, _) = sizeDelimiter.GetDelimiter(msg);
                 data.AddRange(delimiter);
                 data.AddRange(msg);
-                expectedIndexes.Add((i + 1) * (msg.Length + delimiter.Length) + 1);
+                expectedIndexes.Add((i + 1) * (msg.Length + delimiter.Length));
             }
 
 

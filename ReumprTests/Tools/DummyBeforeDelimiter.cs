@@ -15,7 +15,7 @@ namespace tetryds.Reumpr.Tests.Tools
             this.delimiter = delimiter;
         }
 
-        public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
+        public int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
         {
             throw new System.NotImplementedException();
         }

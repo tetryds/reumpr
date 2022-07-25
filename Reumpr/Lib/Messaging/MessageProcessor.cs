@@ -45,22 +45,27 @@ namespace tetryds.Reumpr
         public void GetMessages(byte[] buffer, int count, List<T> messages)
         {
             messages.Clear();
-            delimiter.CheckDelimiters(buffer, count, delimiterIndexes);
+            int skip = delimiter.CheckDelimiters(buffer, count, delimiterIndexes);
+            if (skip > 0)
+            {
+                Array.ConstrainedCopy(buffer, skip, buffer, 0, buffer.Length - skip);
+                count -= skip;
+            }
 
             int start = 0;
             foreach (int index in delimiterIndexes)
             {
-                ShiftBytesRead(buffer, start, index);
+                AdjustReadBytes(buffer, start, index);
                 T message = messageParser.Parse(bytesRead.ToArray());
                 messages.Add(message);
                 bytesRead.Clear();
                 start = index + delimiter.DelimiterSize;
             }
 
-            ShiftBytesRead(buffer, start, count);
+            AdjustReadBytes(buffer, start, count);
         }
 
-        private void ShiftBytesRead(byte[] buffer, int start, int index)
+        private void AdjustReadBytes(byte[] buffer, int start, int index)
         {
             if (index > 0)
             {

@@ -6,6 +6,6 @@ namespace tetryds.Reumpr
     {
         int DelimiterSize { get; }
         (byte[], DelimiterPos) GetDelimiter(byte[] message);
-        void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes);
+        int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes);
     }
 }

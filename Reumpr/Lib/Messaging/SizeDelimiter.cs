@@ -23,18 +23,19 @@ namespace tetryds.Reumpr
             sizeBuffer = new byte[sizeof(int)];
         }
 
-        public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
+        public int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
         {
             if (count < 0) throw new ArgumentException("Argument cannot be lower than zero", nameof(count));
             if (delimiterIndexes is null) throw new ArgumentNullException(nameof(delimiterIndexes));
-            if (count == 0) return;
+            if (count == 0) return 0;
 
             delimiterIndexes.Clear();
+            int start = 0;
 
             if (countLeft > count)
             {
                 countLeft -= count;
-                return;
+                return 0;
             }
             else
             {
@@ -56,9 +57,10 @@ namespace tetryds.Reumpr
                         // countLeft == 0 and readSizes == DelimiterSize -> assign count left from read sizes buffer, reset read sizes
                         // countLeft > 0 -> skip "count left" bytes
                         if (readSizes == 0 && !firstRead)
-                        {
-                            delimiterIndexes.Add(i + 1);
-                        }
+                            delimiterIndexes.Add(i);
+                        if (firstRead)
+                            start = DelimiterSize;
+
                         firstRead = false;
 
                         if (remaining == 0) break;
@@ -76,6 +78,7 @@ namespace tetryds.Reumpr
 
                 }
             }
+            return start;
         }
 
         public (byte[], DelimiterPos) GetDelimiter(byte[] message)
