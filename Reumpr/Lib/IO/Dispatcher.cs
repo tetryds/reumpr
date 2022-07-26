@@ -67,10 +67,11 @@ namespace tetryds.Reumpr
                     (Guid id, T msg) = outbound.Take(cancel);
                     if (clientMap.TryGetValue(id, out TcpClient client))
                     {
+                        NetworkStream networkStream = client.GetStream();
                         byte[][] data = messageProcessor.GetAllBytes(msg);
                         for (int i = 0; i < data.Length; i++)
                         {
-                            client.GetStream().Write(data[i], 0, data[i].Length);
+                            networkStream.Write(data[i], 0, data[i].Length);
                         }
                     }
                     else

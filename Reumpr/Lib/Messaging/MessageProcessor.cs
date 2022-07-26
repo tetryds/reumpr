@@ -14,6 +14,8 @@ namespace tetryds.Reumpr
         List<int> delimiterIndexes;
         List<byte> bytesRead;
 
+        long messagesRead = 0;
+
         public MessageProcessor(IMessageParser<T> messageParser, IMessageDelimiter delimiter)
         {
             this.messageParser = messageParser;
@@ -26,8 +28,8 @@ namespace tetryds.Reumpr
         public byte[][] GetAllBytes(T message)
         {
             byte[] msg = messageParser.Serialize(message);
-            (byte[] del, DelimiterPos pos) = delimiter.GetDelimiter(msg);
-
+            byte[] del = delimiter.GetDelimiter(msg);
+            DelimiterPos pos = delimiter.DelimiterPos;
             byte[][] data = new byte[2][];
             if (pos == DelimiterPos.After)
             {
@@ -44,19 +46,45 @@ namespace tetryds.Reumpr
 
         public void GetMessages(byte[] buffer, int count, List<T> messages)
         {
+            DelimiterPos pos = delimiter.DelimiterPos;
+            //TODO: Move delimiter pos to a property and read from it both here and on get all bytes
+            if (pos == DelimiterPos.After)
+                GetMessagesAfter(buffer, count, messages);
+            else
+                GetMessagesBefore(buffer, count, messages);
+        }
+
+        public void GetMessagesBefore(byte[] buffer, int count, List<T> messages)
+        {
             messages.Clear();
-            int skip = delimiter.CheckDelimiters(buffer, count, delimiterIndexes);
-            if (skip > 0)
+            delimiter.CheckDelimiters(buffer, count, delimiterIndexes);
+
+            int start = 0;
+            foreach (int index in delimiterIndexes)
             {
-                Array.ConstrainedCopy(buffer, skip, buffer, 0, buffer.Length - skip);
-                count -= skip;
+                AdjustReadBytes(buffer, start, index);
+                bytesRead.RemoveRange(0, delimiter.DelimiterSize);
+                T message = messageParser.Parse(bytesRead.ToArray());
+                messagesRead++;
+                messages.Add(message);
+                bytesRead.Clear();
+                start = index;
             }
+
+            AdjustReadBytes(buffer, start, count);
+        }
+
+        public void GetMessagesAfter(byte[] buffer, int count, List<T> messages)
+        {
+            messages.Clear();
+            delimiter.CheckDelimiters(buffer, count, delimiterIndexes);
 
             int start = 0;
             foreach (int index in delimiterIndexes)
             {
                 AdjustReadBytes(buffer, start, index);
                 T message = messageParser.Parse(bytesRead.ToArray());
+                messagesRead++;
                 messages.Add(message);
                 bytesRead.Clear();
                 start = index + delimiter.DelimiterSize;

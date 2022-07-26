@@ -49,12 +49,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SizeDelimiterTests.cs" />
-    <Compile Include="MessageProcessorTests.cs" />
-    <Compile Include="MarkerDelimiterTests.cs" />
+    <Compile Include="Messaging\SizeDelimiterTests.cs" />
+    <Compile Include="Messaging\MessageProcessorTests.cs" />
+    <Compile Include="Messaging\MarkerDelimiterTests.cs" />
     <Compile Include="ConcurrentHashTests.cs" />
     <Compile Include="GatewayEndToEndTests.cs" />
-    <Compile Include="Tools\DummyBeforeDelimiter.cs" />
+    <Compile Include="Tools\ListExt.cs" />
     <Compile Include="Tools\UTF8Parser.cs" />
     <Compile Include="Tools\CallbackObjAggregator.cs" />
     <Compile Include="Tools\CallbackObjReader.cs" />

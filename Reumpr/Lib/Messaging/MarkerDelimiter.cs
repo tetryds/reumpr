@@ -14,6 +14,7 @@ namespace tetryds.Reumpr
         int overflowFill;
 
         public int DelimiterSize => delimiter.Length;
+        public DelimiterPos DelimiterPos => DelimiterPos.After;
 
         public MarkerDelimiter(byte[] delimiter)
         {
@@ -28,12 +29,12 @@ namespace tetryds.Reumpr
             overflowFill = overflowLength;
         }
 
-        public (byte[], DelimiterPos) GetDelimiter(byte[] message)
+        public byte[] GetDelimiter(byte[] message)
         {
-            return (delimiter, DelimiterPos.After);
+            return delimiter;
         }
 
-        public int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
+        public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
         {
             if (count > data.Length) throw new ArgumentException("Count cannot be greater than data length");
             delimiterIndexes.Clear();
@@ -85,7 +86,6 @@ namespace tetryds.Reumpr
 
             ShiftOverflowBuffer(data, count);
             // Marked msg always starts at 0
-            return 0;
         }
 
         private void ShiftOverflowBuffer(byte[] data, int count)

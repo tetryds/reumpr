@@ -3,87 +3,65 @@ using System.Collections.Generic;
 
 namespace tetryds.Reumpr
 {
+    public enum SizeDelimiterState
+    {
+        ReadingSize,
+        ReadingMessage
+    }
+
     public class SizeDelimiter : IMessageDelimiter
     {
-        byte[] sizeBuffer;
+        const int BufferSize = sizeof(int);
 
-        public int DelimiterSize => sizeof(int);
+        readonly byte[] sizeBuffer = new byte[BufferSize];
+        int sizeIndex = 0;
 
-        // Must start with len
-        int countLeft = 0;
-        int readSizes = 0;
+        int bytesLeft = 0;
 
-        bool firstRead = true;
+        SizeDelimiterState state = SizeDelimiterState.ReadingSize;
 
-        // How much of the size buffer has been read
-        // How much is left for the message to be read
+        public int DelimiterSize => sizeBuffer.Length;
+        public DelimiterPos DelimiterPos => DelimiterPos.Before;
 
-        public SizeDelimiter()
+        public byte[] GetDelimiter(byte[] message)
         {
-            sizeBuffer = new byte[sizeof(int)];
+            return BitConverter.GetBytes(message.Length);
         }
 
-        public int CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
+        public void CheckDelimiters(byte[] data, int count, List<int> delimiterIndexes)
         {
-            if (count < 0) throw new ArgumentException("Argument cannot be lower than zero", nameof(count));
-            if (delimiterIndexes is null) throw new ArgumentNullException(nameof(delimiterIndexes));
-            if (count == 0) return 0;
-
             delimiterIndexes.Clear();
-            int start = 0;
-
-            if (countLeft > count)
+            int pos = 0;
+            while (pos < count)
             {
-                countLeft -= count;
-                return 0;
-            }
-            else
-            {
-                for (int i = 0; i < count; i++)
+                if (state == SizeDelimiterState.ReadingMessage)
                 {
-                    int remaining = count - i;
-                    if (countLeft <= remaining)
+                    int slice = Math.Min(bytesLeft, count - pos);
+                    //Compensate for i++
+                    pos += slice;
+                    bytesLeft -= slice;
+                    if (bytesLeft == 0)
                     {
-                        int advance = Math.Min(countLeft, remaining);
-                        i += advance;
-                        countLeft -= advance;
-                        remaining -= advance;
+                        state = SizeDelimiterState.ReadingSize;
+                        delimiterIndexes.Add(pos);
+                    }
+                }
+                else if (state == SizeDelimiterState.ReadingSize)
+                {
+                    int toRead = Math.Min(BufferSize - sizeIndex, count - pos);
+                    for (; pos < count && sizeIndex < BufferSize; sizeIndex++, pos++)
+                    {
+                        sizeBuffer[sizeIndex] = data[pos];
                     }
 
-                    if (countLeft == 0)
+                    if (sizeIndex == BufferSize)
                     {
-                        // countLeft == 0 and readSizes == 0 -> assign delimiter, read sizes buffer
-                        // countLeft == 0 and readSizes < DelimiterSize -> read sizes buffer
-                        // countLeft == 0 and readSizes == DelimiterSize -> assign count left from read sizes buffer, reset read sizes
-                        // countLeft > 0 -> skip "count left" bytes
-                        if (readSizes == 0 && !firstRead)
-                            delimiterIndexes.Add(i);
-                        if (firstRead)
-                            start = DelimiterSize;
-
-                        firstRead = false;
-
-                        if (remaining == 0) break;
-
-                        if (readSizes < DelimiterSize)
-                        {
-                            sizeBuffer[readSizes++] = data[i];
-                        }
-                        if (readSizes == DelimiterSize)
-                        {
-                            readSizes = 0;
-                            countLeft = BitConverter.ToInt32(sizeBuffer, 0);
-                        }
+                        state = SizeDelimiterState.ReadingMessage;
+                        sizeIndex = 0;
+                        bytesLeft = BitConverter.ToInt32(sizeBuffer, 0);
                     }
-
                 }
             }
-            return start;
-        }
-
-        public (byte[], DelimiterPos) GetDelimiter(byte[] message)
-        {
-            return (BitConverter.GetBytes(message.Length), DelimiterPos.Before);
         }
     }
 }

@@ -37,13 +37,14 @@ namespace tetryds.Reumpr.Tests
         [TestMethod]
         public void GetBytesDelimiterBefore()
         {
-            DummyBeforeDelimiter delimiter = new DummyBeforeDelimiter(parser.Serialize("ZZ"));
+            parser = new UTF8Parser();
+            SizeDelimiter delimiter = new SizeDelimiter();
             processor = new MessageProcessor<string>(parser, delimiter);
 
             byte[][] data = processor.GetAllBytes("Bom Dia");
 
-            byte[] expectedDelimiter = parser.Serialize("ZZ");
             byte[] expectedMessage = parser.Serialize("Bom Dia");
+            byte[] expectedDelimiter = BitConverter.GetBytes(expectedMessage.Length);
 
             CollectionAssert.AreEqual(data[0], expectedDelimiter);
             CollectionAssert.AreEqual(data[1], expectedMessage);
