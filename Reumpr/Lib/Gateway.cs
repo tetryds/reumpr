@@ -14,6 +14,7 @@ namespace tetryds.Reumpr
         ConcurrentDictionary<int, TcpListener> listeners;
         BlockingCollection<Package<T>> received;
 
+        public event Action<Guid> ClientRegistered;
         public event Action<Guid> ClientDisconnected;
         public event Action<Exception> ErrorOcurred;
 
@@ -97,6 +98,7 @@ namespace tetryds.Reumpr
         {
             dispatcher.RegisterTcpClient(id, client);
             receiver.ListenTcpClient(id, client);
+            ClientRegistered?.Invoke(id);
         }
 
         private void RemoveClient(Guid id)

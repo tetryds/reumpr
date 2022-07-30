@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reumpr", "Reumpr\Reumpr.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reumpr.Tests", "ReumprTests\Reumpr.Tests.csproj", "{6A4431C4-5E46-42AD-B152-52F2A7786529}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reumpr.Service", "Reumpr.Service\Reumpr.Service.csproj", "{394F36AE-3992-4564-9F17-FABD8196BC62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reumpr.Service.Tests", "Reumpr.Service.Tests\Reumpr.Service.Tests.csproj", "{DA94474E-C71A-47E6-B6FF-0E71FFC57981}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{6A4431C4-5E46-42AD-B152-52F2A7786529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A4431C4-5E46-42AD-B152-52F2A7786529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A4431C4-5E46-42AD-B152-52F2A7786529}.Release|Any CPU.Build.0 = Release|Any CPU
+		{394F36AE-3992-4564-9F17-FABD8196BC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{394F36AE-3992-4564-9F17-FABD8196BC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{394F36AE-3992-4564-9F17-FABD8196BC62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{394F36AE-3992-4564-9F17-FABD8196BC62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA94474E-C71A-47E6-B6FF-0E71FFC57981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA94474E-C71A-47E6-B6FF-0E71FFC57981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA94474E-C71A-47E6-B6FF-0E71FFC57981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA94474E-C71A-47E6-B6FF-0E71FFC57981}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
