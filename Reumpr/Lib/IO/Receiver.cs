@@ -50,8 +50,7 @@ namespace tetryds.Reumpr
             NetworkStream stream = receiveState.Stream;
             byte[] buffer = receiveState.Buffer;
             MessageProcessor<T> messageProcessor = receiveState.messageProcessor;
-
-            List<T> messages = new List<T>();
+            List<T> messages = receiveState.Messages;
 
             try
             {
@@ -83,6 +82,7 @@ namespace tetryds.Reumpr
             public readonly NetworkStream Stream;
             public readonly MessageProcessor<T> messageProcessor;
             public readonly byte[] Buffer;
+            public readonly List<T> Messages = new List<T>();
 
             public ReceiveState(Guid id, NetworkStream stream, MessageProcessor<T> messageProcessor, byte[] buffer)
             {

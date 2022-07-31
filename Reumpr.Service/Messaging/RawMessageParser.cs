@@ -58,9 +58,19 @@ namespace tetryds.Reumpr.Service
                 data[i * 2 + 5] = msg.Payload[i];
             }
 
-            // This can be optimized if needed by manually creating
-            // an array and using the fast Array.copy api
-            return data.SelectMany(d => d).ToArray();
+            int totalLength = data.Aggregate(0, (s, d) => s + d.Length);
+            byte[] combined = new byte[totalLength];
+
+            int start = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] entry = data[i];
+                int length = entry.Length;
+                Array.Copy(entry, 0, combined, start, length);
+                start += length;
+            }
+
+            return combined;
         }
     }
 }

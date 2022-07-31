@@ -46,6 +46,7 @@ namespace tetryds.Reumpr
 
         public void GetMessages(byte[] buffer, int count, List<T> messages)
         {
+            messages.Clear();
             DelimiterPos pos = delimiter.DelimiterPos;
             //TODO: Move delimiter pos to a property and read from it both here and on get all bytes
             if (pos == DelimiterPos.After)

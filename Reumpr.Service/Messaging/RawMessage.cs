@@ -11,10 +11,30 @@ namespace tetryds.Reumpr.Service
         public string Name;
         public byte[][] Payload;
 
+        public RawMessage CopyHeader()
+        {
+            return new RawMessage
+            {
+                Status = Status,
+                Id = Id,
+                Name = Name
+            };
+        }
+
+        public RawMessage CopyHeader(byte[][] payload)
+        {
+            return new RawMessage
+            {
+                Status = Status,
+                Id = Id,
+                Name = Name,
+                Payload = payload
+            };
+        }
+
         public override bool Equals(object obj)
         {
-            var message = obj as RawMessage;
-            return message != null &&
+            return obj is RawMessage message &&
                    Status == message.Status &&
                    Id == message.Id &&
                    Name == message.Name &&

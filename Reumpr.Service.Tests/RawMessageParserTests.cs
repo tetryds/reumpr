@@ -16,7 +16,7 @@ namespace Reumpr.Service.Tests
             {
                 Id = 10,
                 Name = "Bom dia",
-                Status = 0,
+                Status = 666,
                 Payload = GeneratePayload(10)
             };
 
@@ -24,6 +24,7 @@ namespace Reumpr.Service.Tests
 
             byte[] data = parser.Serialize(message);
             RawMessage deserialized = parser.Parse(data);
+            Assert.AreEqual(message, deserialized);
         }
 
         [TestMethod]
@@ -31,8 +32,8 @@ namespace Reumpr.Service.Tests
         {
             RawMessage message = new RawMessage
             {
-                Id = 10,
-                Name = "Bom dia",
+                Id = 11,
+                Name = "",
                 Status = 0,
                 Payload = GeneratePayload(0)
             };
@@ -41,6 +42,7 @@ namespace Reumpr.Service.Tests
 
             byte[] data = parser.Serialize(message);
             RawMessage deserialized = parser.Parse(data);
+            Assert.AreEqual(message, deserialized);
         }
 
         private byte[][] GeneratePayload(int count)
