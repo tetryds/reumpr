@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using tetryds.Reumpr.Collections;
@@ -15,7 +16,7 @@ namespace tetryds.Reumpr
         readonly CancellationTokenSource canceller;
         readonly Thread worker;
 
-        public event Action<MissingClientException> MissingClient;
+        public event Action<MissingClientException> MissingRemote;
         public event Action<Exception> CrashOcurred;
 
         public Dispatcher(Func<MessageProcessor<T>> messageProcessorProvider)
@@ -71,18 +72,20 @@ namespace tetryds.Reumpr
                         byte[][] data = messageProcessor.GetAllBytes(msg);
                         for (int i = 0; i < data.Length; i++)
                         {
+                            //TODO: Handle error when client disconnects while writing
                             networkStream.Write(data[i], 0, data[i].Length);
                         }
                     }
                     else
                     {
-                        MissingClient?.Invoke(new MissingClientException(id));
+                        MissingRemote?.Invoke(new MissingClientException(id));
                     }
                 }
             }
             catch (OperationCanceledException) { /* it was me! */ }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 CrashOcurred?.Invoke(e);
             }
         }

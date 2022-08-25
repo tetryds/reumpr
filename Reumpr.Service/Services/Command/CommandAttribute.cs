@@ -2,7 +2,7 @@
 
 namespace tetryds.Reumpr.Service
 {
-    internal class CommandAttribute : Attribute
+    public class CommandAttribute : Attribute
     {
     }
 }

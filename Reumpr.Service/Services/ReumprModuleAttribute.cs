@@ -2,7 +2,7 @@
 
 namespace tetryds.Reumpr.Service
 {
-    internal class ReumprModuleAttribute : Attribute
+    public class ReumprModuleAttribute : Attribute
     {
     }
 }

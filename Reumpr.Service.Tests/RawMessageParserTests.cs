@@ -16,7 +16,7 @@ namespace Reumpr.Service.Tests
             {
                 Id = 10,
                 Name = "Bom dia",
-                Status = 666,
+                Status = MessageStatus.Ok,
                 Payload = GeneratePayload(10)
             };
 

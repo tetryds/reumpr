@@ -14,8 +14,8 @@ namespace tetryds.Reumpr
         ConcurrentDictionary<int, TcpListener> listeners;
         BlockingCollection<Package<T>> received;
 
-        public event Action<Guid> ClientRegistered;
-        public event Action<Guid> ClientDisconnected;
+        public event Action<Guid> Connected;
+        public event Action<Guid> Disconnected;
         public event Action<Exception> ErrorOcurred;
 
         public Gateway(Func<MessageProcessor<T>> messageProcessorProvider, int recvBufferSize)
@@ -34,13 +34,13 @@ namespace tetryds.Reumpr
             receiver.ReadErrorOcurred += (e) =>
             {
                 RemoveClient(e.Id);
-                ClientDisconnected?.Invoke(e.Id);
+                Disconnected?.Invoke(e.Id);
             };
 
             receiver.ClientDisconnected += c =>
             {
                 RemoveClient(c);
-                ClientDisconnected?.Invoke(c);
+                Disconnected?.Invoke(c);
             };
         }
 
@@ -98,7 +98,7 @@ namespace tetryds.Reumpr
         {
             dispatcher.RegisterTcpClient(id, client);
             receiver.ListenTcpClient(id, client);
-            ClientRegistered?.Invoke(id);
+            Connected?.Invoke(id);
         }
 
         private void RemoveClient(Guid id)

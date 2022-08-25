@@ -11,6 +11,8 @@ namespace tetryds.Reumpr.Service
         readonly object Obj;
         readonly MethodInfo Method;
 
+        // TODO: Create actual url definition
+        public string Name => Method.Name;
         public ParameterInfo[] Parameters { get; }
 
         public Command(object obj, MethodInfo mInfo)

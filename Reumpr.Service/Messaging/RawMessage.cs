@@ -6,7 +6,7 @@ namespace tetryds.Reumpr.Service
 {
     public class RawMessage
     {
-        public int Status;
+        public MessageStatus Status;
         public int Id;
         public string Name;
         public byte[][] Payload;

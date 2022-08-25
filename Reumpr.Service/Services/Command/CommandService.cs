@@ -23,11 +23,6 @@ namespace tetryds.Reumpr.Service
                 throw new CommandException($"Cannot register command, url '{url}' already registered");
         }
 
-        public void HandleRequest(RawMessage request)
-        {
-
-        }
-
         public void Invoke(Handler handler)
         {
             RawMessage request = handler.Request;
@@ -55,15 +50,7 @@ namespace tetryds.Reumpr.Service
             }
 
             object ret = command.Invoke(parameterObjs);
-
-            byte[] retData = parser.Serialize(ret);
-
-            RawMessage response = request.CopyHeader(new byte[1][] { retData });
-
-            //TODO: decide if another message for close is a good thing
-            //TODO: decide if we will clone the original raw message header for simplicity
-            //TODO: find a trivial way to create a response message, maybe have someone else parsing stuff?
-            handler.Reply(response);
+            handler.ReplyClose(ret);
         }
     }
 }

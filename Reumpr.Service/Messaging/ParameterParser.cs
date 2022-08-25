@@ -15,12 +15,14 @@ namespace tetryds.Reumpr.Service
         ConcurrentDictionary<Type, Func<byte[], object>> parserMap;
         ConcurrentDictionary<Type, Func<object, byte[]>> serializerMap;
 
-        public ParameterParser(Func<byte[], Type, object> objectParser)
+        public ParameterParser(Func<byte[], Type, object> objectParser, Func<object, byte[]> objectSerializer)
         {
             this.objectParser = objectParser;
+            this.objectSerializer = objectSerializer;
 
             parserMap = new ConcurrentDictionary<Type, Func<byte[], object>>
             {
+                [typeof(byte[])] = obj => (byte[])obj.Clone(),
                 [typeof(bool)] = data => BitConverter.ToBoolean(data, 0),
                 [typeof(char)] = data => BitConverter.ToChar(data, 0),
                 [typeof(double)] = data => BitConverter.ToDouble(data, 0),
@@ -37,6 +39,7 @@ namespace tetryds.Reumpr.Service
             serializerMap = new ConcurrentDictionary<Type, Func<object, byte[]>>
             {
                 [typeof(void)] = obj => new byte[0],
+                [typeof(byte[])] = obj => (byte[])((byte[])obj).Clone(),
                 [typeof(bool)] = obj => BitConverter.GetBytes((bool)obj),
                 [typeof(char)] = obj => BitConverter.GetBytes((char)obj),
                 [typeof(double)] = obj => BitConverter.GetBytes((double)obj),
@@ -48,6 +51,7 @@ namespace tetryds.Reumpr.Service
                 [typeof(uint)] = obj => BitConverter.GetBytes((uint)obj),
                 [typeof(ulong)] = obj => BitConverter.GetBytes((ulong)obj),
                 [typeof(string)] = obj => Encoding.UTF8.GetBytes((string)obj),
+                [typeof(Exception)] = obj => Encoding.UTF8.GetBytes(obj.ToString()),
             };
         }
 
@@ -55,6 +59,7 @@ namespace tetryds.Reumpr.Service
         {
             if (parserMap.TryGetValue(type, out Func<byte[], object> parser))
                 return parser(data);
+
             if (objectParser == null)
                 throw new SerializeException($"Cannot parse object, no custom parser for type {type.GetType()}");
             return objectParser(data, type);
@@ -62,8 +67,10 @@ namespace tetryds.Reumpr.Service
 
         public byte[] Serialize(object obj)
         {
+            if (obj == null) return new byte[0];
             if (serializerMap.TryGetValue(obj.GetType(), out Func<object, byte[]> serializer))
                 return serializer(obj);
+
             if (objectSerializer == null)
                 throw new SerializeException($"Cannot serialize object, no custom serializer for type {obj.GetType()}");
             return objectSerializer(obj);

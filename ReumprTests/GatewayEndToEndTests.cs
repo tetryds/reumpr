@@ -46,7 +46,7 @@ namespace tetryds.Reumpr.Tests
             List<string> received = new List<string>(MsgCount);
             while (received.Count < MsgCount && gateway.TryGetMessage(out Package<string> item, RecvTimeoutMs))
             {
-                received.Add(item.Msg);
+                received.Add(item.Message);
             }
 
             Assert.AreEqual(MsgCount, received.Count);
@@ -81,7 +81,7 @@ namespace tetryds.Reumpr.Tests
             List<string> received = new List<string>(MsgCount);
             while (received.Count < MsgCount && gateway.TryGetMessage(out Package<string> item, RecvTimeoutMs))
             {
-                received.Add(item.Msg);
+                received.Add(item.Message);
             }
 
             Assert.AreEqual(MsgCount, received.Count);

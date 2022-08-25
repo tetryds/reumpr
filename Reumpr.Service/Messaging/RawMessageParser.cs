@@ -13,7 +13,7 @@ namespace tetryds.Reumpr.Service
             RawMessage message = new RawMessage();
 
             int shift = 0;
-            message.Status = BitConverter.ToInt32(data, shift);
+            message.Status = (MessageStatus)BitConverter.ToInt32(data, shift);
             shift += sizeof(int);
             message.Id = BitConverter.ToInt32(data, shift);
             shift += sizeof(int);
@@ -42,7 +42,7 @@ namespace tetryds.Reumpr.Service
         {
             byte[][] data = new byte[4 + msg.Payload.Length * 2][];
 
-            byte[] status = BitConverter.GetBytes(msg.Status);
+            byte[] status = BitConverter.GetBytes((int)msg.Status);
             byte[] id = BitConverter.GetBytes(msg.Id);
             byte[] name = Encoding.UTF8.GetBytes(msg.Name);
             byte[] nameSize = BitConverter.GetBytes(name.Length);
