@@ -50,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Reumpr.Common\Reumpr.Common.csproj">
+      <Project>{ACBB42D3-8B67-4E3A-A28F-14DB5CCFEC7A}</Project>
+      <Name>Reumpr.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reumpr.Service\Reumpr.Service.csproj">
       <Project>{394f36ae-3992-4564-9f17-fabd8196bc62}</Project>
       <Name>Reumpr.Service</Name>

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using tetryds.Reumpr.Common.Exceptions;
 
-namespace tetryds.Reumpr.Service
+namespace tetryds.Reumpr.Common
 {
     public class ParameterParser
     {
@@ -55,6 +56,8 @@ namespace tetryds.Reumpr.Service
             };
         }
 
+        public T Parse<T>(byte[] data) => (T)Parse(data, typeof(T));
+
         public object Parse(byte[] data, Type type)
         {
             if (parserMap.TryGetValue(type, out Func<byte[], object> parser))
@@ -74,6 +77,16 @@ namespace tetryds.Reumpr.Service
             if (objectSerializer == null)
                 throw new SerializeException($"Cannot serialize object, no custom serializer for type {obj.GetType()}");
             return objectSerializer(obj);
+        }
+
+        public byte[][] SerializeMany(params object[] obj)
+        {
+            byte[][] data = new byte[obj.Length][];
+            for (int i = 0; i < obj.Length; i++)
+            {
+                data[i] = Serialize(obj[i]);
+            }
+            return data;
         }
     }
 }

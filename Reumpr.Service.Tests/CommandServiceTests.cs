@@ -2,6 +2,8 @@
 using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using tetryds.Reumpr.Common;
+using tetryds.Reumpr.Common.Exceptions;
 using tetryds.Reumpr.Service;
 
 namespace Reumpr.Service.Tests
@@ -28,7 +30,7 @@ namespace Reumpr.Service.Tests
             {
                 Payload = new byte[1][] { Encoding.UTF8.GetBytes(MethodName) }
             };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new ServerHandler(Guid.Empty, rawMessage);
 
             service.Invoke(handler);
 
@@ -64,7 +66,7 @@ namespace Reumpr.Service.Tests
             payload[3] = parser.Serialize(expectedF);
 
             RawMessage rawMessage = new RawMessage() { Payload = payload };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new ServerHandler(Guid.Empty, rawMessage);
 
             service.Invoke(handler);
 
@@ -98,7 +100,7 @@ namespace Reumpr.Service.Tests
             payload[1] = parser.Serialize(message);
 
             RawMessage rawMessage = new RawMessage() { Payload = payload };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new ServerHandler(Guid.Empty, rawMessage);
 
             object ret = default(object);
             MessageStatus status = default(MessageStatus);
@@ -130,7 +132,7 @@ namespace Reumpr.Service.Tests
             payload[1] = parser.Serialize(message);
 
             RawMessage rawMessage = new RawMessage() { Payload = payload };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new ServerHandler(Guid.Empty, rawMessage);
 
             Assert.ThrowsException<CommandException>(() => service.Invoke(handler));
         }
@@ -154,7 +156,7 @@ namespace Reumpr.Service.Tests
             payload[1] = parser.Serialize(message);
 
             RawMessage rawMessage = new RawMessage() { Payload = payload };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new tetryds.Reumpr.Service.ServerHandler(Guid.Empty, rawMessage);
 
             Assert.ThrowsException<CommandException>(() => service.Invoke(handler));
         }
@@ -175,7 +177,7 @@ namespace Reumpr.Service.Tests
             byte[][] payload = new byte[0][];
 
             RawMessage rawMessage = new RawMessage() { Payload = payload };
-            Handler handler = new Handler(Guid.Empty, rawMessage);
+            ServerHandler handler = new ServerHandler(Guid.Empty, rawMessage);
 
             Assert.ThrowsException<CommandException>(() => service.Invoke(handler));
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace tetryds.Reumpr.Service
+namespace tetryds.Reumpr.Common
 {
     public class RawMessage
     {

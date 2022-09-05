@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace tetryds.Reumpr.Service
+namespace tetryds.Reumpr.Common
 {
     public class RawMessageParser : IMessageParser<RawMessage>
     {

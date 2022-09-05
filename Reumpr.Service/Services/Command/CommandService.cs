@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using tetryds.Reumpr.Common;
+using tetryds.Reumpr.Common.Exceptions;
 
 namespace tetryds.Reumpr.Service
 {
@@ -23,7 +25,7 @@ namespace tetryds.Reumpr.Service
                 throw new CommandException($"Cannot register command, url '{url}' already registered");
         }
 
-        public void Invoke(Handler handler)
+        public void Invoke(ServerHandler handler)
         {
             RawMessage request = handler.Request;
             byte[][] payload = request.Payload;

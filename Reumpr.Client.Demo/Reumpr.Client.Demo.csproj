@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DemoClient.cs" />
     <Compile Include="ClientProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -49,9 +50,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Reumpr.Service\Reumpr.Service.csproj">
-      <Project>{394F36AE-3992-4564-9F17-FABD8196BC62}</Project>
-      <Name>Reumpr.Service</Name>
+    <ProjectReference Include="..\Reumpr.Client\Reumpr.Client.csproj">
+      <Project>{7087d8fe-971e-4a0c-83b9-66078520c98e}</Project>
+      <Name>Reumpr.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reumpr.Common\Reumpr.Common.csproj">
+      <Project>{ACBB42D3-8B67-4E3A-A28F-14DB5CCFEC7A}</Project>
+      <Name>Reumpr.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reumpr\Reumpr.csproj">
       <Project>{6ef95b43-7cab-4045-9d16-680be5a764c7}</Project>

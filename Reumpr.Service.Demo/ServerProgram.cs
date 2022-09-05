@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Reumpr.Service;
 using tetryds.Reumpr;
+using tetryds.Reumpr.Common;
 using tetryds.Reumpr.Service;
 
 namespace Reumpr.Service.Demo
@@ -22,6 +23,7 @@ namespace Reumpr.Service.Demo
             //With size delimiter (can be default)
             Gateway<RawMessage> gateway = new Gateway<RawMessage>(GetProcessor, 4096);
             gateway.Connected += id => Console.WriteLine($"Connected {id}");
+            gateway.Disconnected += id => Console.WriteLine($"Disconnected {id}");
             gateway.ErrorOcurred += e => Console.WriteLine(e);
             gateway.Start();
 

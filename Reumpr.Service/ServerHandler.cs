@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using tetryds.Reumpr.Collections;
+using tetryds.Reumpr.Common;
+using tetryds.Reumpr.Common.Exceptions;
 
 namespace tetryds.Reumpr.Service
 {
-    public class Handler
+    public class ServerHandler
     {
         public Guid Id { get; }
         public RawMessage Request { get; }
@@ -15,7 +16,7 @@ namespace tetryds.Reumpr.Service
 
         public event Action<object, MessageStatus> Replied;
 
-        public Handler(Guid id, RawMessage message)
+        public ServerHandler(Guid id, RawMessage message)
         {
             Id = id;
             Request = message;
@@ -65,7 +66,7 @@ namespace tetryds.Reumpr.Service
         private void EnsureOpen()
         {
             if (!IsOpen)
-                throw new HandlerException("Cannot perform operation, handler is closed");
+                throw new Exception("Cannot perform operation, handler is closed");
         }
     }
 }

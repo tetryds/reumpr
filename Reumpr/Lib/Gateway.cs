@@ -14,6 +14,8 @@ namespace tetryds.Reumpr
         ConcurrentDictionary<int, TcpListener> listeners;
         BlockingCollection<Package<T>> received;
 
+        public int ClientCount => dispatcher.ClientCount;
+
         public event Action<Guid> Connected;
         public event Action<Guid> Disconnected;
         public event Action<Exception> ErrorOcurred;

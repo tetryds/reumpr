@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace tetryds.Reumpr.Service
+namespace tetryds.Reumpr.Common.Exceptions
 {
     [Serializable]
-    internal class ServiceException : Exception
+    public class ServiceException : Exception
     {
         public ServiceException()
         {

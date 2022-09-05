@@ -16,6 +16,8 @@ namespace tetryds.Reumpr
         readonly CancellationTokenSource canceller;
         readonly Thread worker;
 
+        public int ClientCount => clientMap.Count;
+
         public event Action<MissingClientException> MissingRemote;
         public event Action<Exception> CrashOcurred;
 
@@ -29,7 +31,7 @@ namespace tetryds.Reumpr
 
             worker = new Thread(DoDispatch)
             {
-                Priority = ThreadPriority.BelowNormal,
+                Priority = ThreadPriority.Normal,
                 Name = "Reumpr Dispatcher",
                 IsBackground = true,
             };

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Reumpr.Common\Reumpr.Common.csproj" />
     <ProjectReference Include="..\Reumpr\Reumpr.csproj" />
   </ItemGroup>
 

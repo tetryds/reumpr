@@ -29,8 +29,15 @@ namespace Reumpr.Service.Demo
         [Command]
         public float Sum(float value1, float value2)
         {
-            Console.WriteLine($"Sum {value1} + {value2}");
+            //Console.WriteLine($"Sum {value1} + {value2}");
             return value1 + value2;
+        }
+
+        [Command]
+        public byte[] RawSum(float value1, float value2)
+        {
+            //Console.WriteLine($"Sum {value1} + {value2}");
+            return BitConverter.GetBytes(value1 + value2);
         }
     }
 }

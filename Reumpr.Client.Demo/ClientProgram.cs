@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using tetryds.Reumpr;
-using tetryds.Reumpr.Service;
+using tetryds.Reumpr.Client;
+using tetryds.Reumpr.Common;
 
 namespace Reumpr.Client.Demo
 {
@@ -22,44 +23,42 @@ namespace Reumpr.Client.Demo
             gateway.Start();
             ParameterParser parser = new ParameterParser(null, null);
 
-            Guid id = gateway.ConnectTo("localhost", Port);
+            Connection connection = new Connection(gateway, parser);
+            connection.ConnectTo("localhost", Port);
 
-            int recv = 0;
-            Thread listener = new Thread(() =>
+            List<Handler> handlers = new List<Handler>();
+
+            DemoClient client = new DemoClient(connection, parser, 100);
+
+            Random random = new Random(10);
+
+
+            int count = 0;
+            void LogCount()
             {
-                while (true)
-                {
-                    (Guid remote, RawMessage msg) = gateway.GetMessage();
-                    Console.WriteLine($"Recv {recv}, {DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond}");
-                    recv++;
-                    Console.WriteLine(msg.Id);
-                    Console.WriteLine(msg.Name);
-                    Console.WriteLine(msg.Status);
-                    Console.WriteLine(parser.Parse(msg.Payload[0], typeof(float)));
-                }
-            });
-            listener.IsBackground = true;
-            listener.Start();
+                Console.WriteLine(count);
+                count = 0;
+            }
 
-            int sent = 0;
+            Timer timer = new Timer(o => LogCount(), null, 0, 1_000);
             while (true)
             {
-                float entry1 = float.Parse(Console.ReadLine());
-                float entry2 = float.Parse(Console.ReadLine());
-                if (entry1 == 0) break;
+                //float value1 = float.Parse(Console.ReadLine());
+                float value1 = 981267.423f;
+                float value2 = 2983746.123f;
 
-                RawMessage message = new RawMessage()
-                {
-                    Id = 10,
-                    Name = "Command",
-                    Status = MessageStatus.Ok,
-                    Payload = new byte[][] { parser.Serialize("Sum"), parser.Serialize(entry1), parser.Serialize(entry2) }
-                };
+                float sum = client.RpcRawSum(value1, value2);
 
-                Console.WriteLine($"Sent {sent}, {DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond}");
-                gateway.SendMessage(id, message);
-                sent++;
+                Console.WriteLine($"Result: {sum}");
+                count++;
             }
+
+            //while (true)
+            //{
+            //    if (Console.ReadLine() != "") break;
+
+            //    Console.Write($"Result: {client.RpcGetClientCount()}");
+            //}
         }
 
         private static MessageProcessor<RawMessage> GetProcessor()

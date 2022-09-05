@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using tetryds.Reumpr.Common;
 using tetryds.Reumpr.Service;
 
 namespace Reumpr.Service.Tests
